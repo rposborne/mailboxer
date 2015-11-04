@@ -7,6 +7,7 @@ module Mailboxer
     end
 
     def call
+      # Why is this here, the dispatch should dispatch email not decide to dispatch
       return false unless Mailboxer.uses_emails
 
       receipts.map do |receipt|
