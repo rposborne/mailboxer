@@ -1,8 +1,8 @@
 class CreateFakeAttachments < ActiveRecord::Migration
   def self.up
     create_table :fake_attachments do |t|
-      t.integer :attachable_id
-      t.string :attachable_type
+      t.integer :fake_attachmentable_id
+      t.string :fake_attachmentable_type
       t.string :file
       t.string :filename
 
