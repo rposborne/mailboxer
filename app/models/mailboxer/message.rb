@@ -4,7 +4,7 @@ class Mailboxer::Message < Mailboxer::Notification
   belongs_to :conversation, :class_name => "Mailboxer::Conversation", :validate => true, :autosave => true
 
   if Mailboxer.attachments_model
-    has_many :attachments, as: :attachable, class_name: Mailboxer.attachments_model.to_s
+    has_many :attachments, as: Mailboxer.attachments_model.to_s.downcase + 'able', class_name: Mailboxer.attachments_model.to_s
   end
 
   validates_presence_of :sender
