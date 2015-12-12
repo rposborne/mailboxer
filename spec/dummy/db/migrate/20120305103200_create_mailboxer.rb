@@ -1,12 +1,12 @@
 class CreateMailboxer < ActiveRecord::Migration
-  def self.up    
+  def self.up
   #Tables
   	#Conversations
     create_table :mailboxer_conversations do |t|
       t.column :subject, :string, :default => ""
       t.column :created_at, :datetime, :null => false
       t.column :updated_at, :datetime, :null => false
-    end    
+    end
   	#Receipts
     create_table :mailboxer_receipts do |t|
       t.references :receiver, :polymorphic => true
@@ -17,7 +17,7 @@ class CreateMailboxer < ActiveRecord::Migration
       t.column :mailbox_type, :string, :limit => 25
       t.column :created_at, :datetime, :null => false
       t.column :updated_at, :datetime, :null => false
-    end    
+    end
   	#Notifications and Messages
     create_table :mailboxer_notifications do |t|
       t.column :type, :string
@@ -28,35 +28,34 @@ class CreateMailboxer < ActiveRecord::Migration
       t.string :notification_code, :default => nil
       t.column :conversation_id, :integer
       t.column :draft, :boolean, :default => false
-      t.column :attachment, :string
       t.column :updated_at, :datetime, :null => false
       t.column :created_at, :datetime, :null => false
       t.boolean :global, :default => false
       t.datetime :expires
-    end    
-    
-    
+    end
+
+
   #Indexes
   	#Conversations
   	#Receipts
   	add_index "mailboxer_receipts","notification_id"
 
-  	#Messages  
+  	#Messages
   	add_index "mailboxer_notifications","conversation_id"
-  
-  #Foreign keys    
+
+  #Foreign keys
   	#Conversations
   	#Receipts
   	add_foreign_key "mailboxer_receipts", "mailboxer_notifications", :name => "receipts_on_notification_id", :column => "notification_id"
-  	#Messages  
+  	#Messages
   	add_foreign_key "mailboxer_notifications", "mailboxer_conversations", :name => "notifications_on_conversation_id", :column => "conversation_id"
   end
-  
+
   def self.down
-  #Tables  	
+  #Tables
   	remove_foreign_key "mailboxer_receipts", :name => "receipts_on_notification_id"
   	remove_foreign_key "mailboxer_notifications", :name => "notifications_on_conversation_id"
-  	
+
   #Indexes
     drop_table :mailboxer_receipts
     drop_table :mailboxer_conversations

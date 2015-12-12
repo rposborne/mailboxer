@@ -7,7 +7,7 @@ class CreateMailboxer < ActiveRecord::Migration
       t.column :created_at, :datetime, :null => false
       t.column :updated_at, :datetime, :null => false
     end
-    #Receipts
+  	#Receipts
     create_table :mailboxer_receipts do |t|
       t.references :receiver, :polymorphic => true
       t.column :notification_id, :integer, :null => false
@@ -18,7 +18,7 @@ class CreateMailboxer < ActiveRecord::Migration
       t.column :created_at, :datetime, :null => false
       t.column :updated_at, :datetime, :null => false
     end
-    #Notifications and Messages
+  	#Notifications and Messages
     create_table :mailboxer_notifications do |t|
       t.column :type, :string
       t.column :body, :text
@@ -28,12 +28,12 @@ class CreateMailboxer < ActiveRecord::Migration
       t.column :draft, :boolean, :default => false
       t.string :notification_code, :default => nil
       t.references :notified_object, :polymorphic => true
-      t.column :attachment, :string
       t.column :updated_at, :datetime, :null => false
       t.column :created_at, :datetime, :null => false
       t.boolean :global, default: false
       t.datetime :expires
     end
+
 
   #Indexes
     #Conversations
