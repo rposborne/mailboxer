@@ -7,13 +7,14 @@ module Mailboxer
     end
 
     def call
-      # Why is this here, the dispatch should dispatch email not decide to dispatch
       return false unless Mailboxer.uses_emails
 
       receipts.map do |receipt|
         email_to = receipt.receiver.send(Mailboxer.email_method, mailable)
         send_email(receipt) if email_to.present?
       end
+
+      receipts
     end
 
     private
@@ -35,11 +36,12 @@ module Mailboxer
     def default_send_email(receipt)
       mail = mailer.send_email(mailable, receipt.receiver)
       mail.respond_to?(:deliver_now) ? mail.deliver_now : mail.deliver
+
       receipt.assign_attributes(
         :delivery_method => :email,
         :message_id => mail.message_id
       )
-      mail
+      receipt
     end
   end
 end
