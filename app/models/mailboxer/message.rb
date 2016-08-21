@@ -1,7 +1,7 @@
 class Mailboxer::Message < Mailboxer::Notification
   self.table_name = :mailboxer_notifications
 
-  belongs_to :conversation, :class_name => "Mailboxer::Conversation", :validate => true, :autosave => true
+  belongs_to :conversation, :validate => true, :autosave => true
 
   if Mailboxer.attachments_model
     has_many :attachments, as: Mailboxer.attachments_model.table_name.singularize.downcase + 'able', class_name: Mailboxer.attachments_model.to_s
@@ -28,16 +28,17 @@ class Mailboxer::Message < Mailboxer::Notification
     self.clean if should_clean
 
     #Receiver receipts
-    receiver_receipts = recipients.map { |r| build_receipt(r, 'inbox') }
+    receiver_receipts = recipients.map do |r|
+      receipts.build(receiver: r, mailbox_type: 'inbox', is_read: false)
+    end
 
     #Sender receipt
-    sender_receipt = build_receipt(sender, 'sentbox', true)
+    sender_receipt =
+      receipts.build(receiver: sender, mailbox_type: 'sentbox', is_read: true)
 
-    temp_receipts = [sender_receipt] + receiver_receipts
-
-    if temp_receipts.all?(&:valid?)
-      temp_receipts = Mailboxer::MailDispatcher.new(self, temp_receipts).call
-      temp_receipts.each(&:save!)
+    if valid?
+      save!
+      Mailboxer::MailDispatcher.new(self, receiver_receipts).call
 
       conversation.touch if reply
 
