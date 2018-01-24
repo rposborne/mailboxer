@@ -46,9 +46,9 @@ module Mailboxer
     def default_send_email(receipt)
       mail = mailer.send_email(mailable, receipt.receiver)
       mail.respond_to?(:deliver_now) ? mail.deliver_now : mail.deliver
-      receipt.assign_attributes(
-        :delivery_method => :email,
-        :message_id => mail.message_id
+      receipt.update(
+        delivery_method: :email,
+        message_id: mail.message_id
       )
       mail
     end
